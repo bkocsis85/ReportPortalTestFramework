@@ -9,6 +9,7 @@ import com.aventstack.extentreports.markuputils.MarkupHelper;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import main.java.utils.Constants;
+import main.java.utils.DriverWeb;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -21,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 
 public class BaseTest {
 
-    public static WebDriver driver;
     public ExtentSparkReporter htmlReporter;
     public static ExtentReports extent;
     public static ExtentTest logger;
@@ -41,18 +41,21 @@ public class BaseTest {
     }
 
     @BeforeMethod
-    @Parameters(value = {"browserName"})
-    public void beforeMethod(String browserName, Method testMethod) {
+    //@Parameters(value = {"browserName"})
+    public void beforeMethod(Method testMethod) {
 
         logger = extent.createTest(testMethod.getName());
-        setupDriver(browserName);
+        WebDriver driver = setupDriver("chrome");
         driver.manage().window().maximize();
         driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        DriverWeb.set(driver);
         setupEnvironment();
     }
 
     @AfterMethod
     public void afterMethod(ITestResult result) {
+
+        WebDriver driver = DriverWeb.get();
 
         if (result.getStatus() == ITestResult.SUCCESS) {
             String methodName = result.getMethod().getMethodName();
@@ -78,24 +81,26 @@ public class BaseTest {
         extent.flush();
     }
 
-    public void setupDriver(String browserName) {
+    public WebDriver setupDriver(String browserName) {
 
         if (browserName.equalsIgnoreCase("chrome")) {
             System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + "drivers" +
                     File.separator + "chromedriver.exe");
-            driver = new ChromeDriver();
+            return new ChromeDriver();
         } else if (browserName.equalsIgnoreCase("firefox")) {
             System.setProperty("webdriver.gecko.driver", System.getProperty("user.dir") + File.separator + "drivers" +
                     File.separator + "geckodriver.exe");
-            driver = new FirefoxDriver();
+            return new FirefoxDriver();
         } else {
             System.setProperty("webdriver.chrome.driver", System.getProperty("user.dir") + File.separator + "drivers" +
                     File.separator + "chromedriver.exe");
-            driver = new ChromeDriver();
+            return new ChromeDriver();
         }
     }
 
     public void setupEnvironment() {
+
+        WebDriver driver = DriverWeb.get();
 
         if (Constants.environment.equals("LOCAL")) {
             driver.get(Constants.urlLocal);

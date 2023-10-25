@@ -1,13 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
-<suite name="Login Test Suite">
+<suite name="Login Test Suite" parallel="methods" thread-count="3">
     <listeners>
             <listener class-name="main.java.utils.SuitListener"/>
     </listeners>
     <test name="Test Automation All Test">
         <parameter name="browserName" value="chrome"/>
         <classes>
-            <class name="test.java.UI.LoginPageTest"/>
+            <class name="test.java.UI.LoginNegativeTests"/>
+            <class name="test.java.UI.LoginPageTests"/>
             <class name="test.java.API.DashboardAPITest"/>
         </classes>
     </test>

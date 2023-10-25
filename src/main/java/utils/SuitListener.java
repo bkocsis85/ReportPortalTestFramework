@@ -3,6 +3,7 @@ package main.java.utils;
 import org.apache.commons.io.FileUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
 import org.testng.IAnnotationTransformer;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
@@ -29,9 +30,12 @@ public class SuitListener implements ITestListener, IAnnotationTransformer {
 
     @Override
     public void onTestFailure(ITestResult result) {
+
+        WebDriver driver = DriverWeb.get();
+
         String fileName = System.getProperty("user.dir") + File.separator + "screenshots" + File.separator +
                 result.getMethod().getMethodName();
-        File screenshot = ((TakesScreenshot) BaseTest.driver).getScreenshotAs(OutputType.FILE);
+        File screenshot = ((TakesScreenshot) driver).getScreenshotAs(OutputType.FILE);
 
         try {
            FileUtils.copyFile(screenshot, new File(fileName + ".png"));
