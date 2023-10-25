@@ -10,6 +10,8 @@ import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import main.java.utils.Constants;
 import main.java.utils.DriverWeb;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
@@ -38,6 +40,25 @@ public class BaseTest {
         extent = new ExtentReports();
         extent.attachReporter(htmlReporter);
         extent.setSystemInfo("Automation Tester", "Balazs Kocsis");
+    }
+
+    @BeforeEach
+    public void setup() {
+
+        WebDriver driver = setupDriver("chrome");
+
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+        DriverWeb.set(driver);
+        setupEnvironment();
+    }
+
+    @AfterEach
+    public void tearDown() {
+
+        WebDriver driver = DriverWeb.get();
+
+        driver.quit();
     }
 
     @BeforeMethod

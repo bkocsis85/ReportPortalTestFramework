@@ -18,7 +18,7 @@ public class LoginPage {
 
     public void verifyLoginPageOpened() {
 
-        BaseTest.logger.info("Verifying login page title text visibility");
+        //BaseTest.logger.info("Verifying login page title text visibility");
         Assert.assertTrue(textLogin.isDisplayed(),
                 "Login page welcome message is not displayed");
     }
